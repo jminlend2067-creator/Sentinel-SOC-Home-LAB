@@ -1,12 +1,12 @@
 # Microsoft Sentinel SOC Home Lab
 
-I wanted to see what a real attack looks like from the defender's side, so I built a cloud SIEM in Azure, put a Windows VM on the open internet, and watched what showed up. Within hours, automated scanners were hammering it with brute-force logins. This repo documents how I set it up, how I analyzed the attacks with KQL, and how I mapped where they came from.
+I wanted to see what a real attack looks like from the defender's side, so I built a cloud SIEM in Azure, put a Windows VM on the open internet, and analyzed what came up. After a couple hours of an open network, automated scanners were hammering it with brute-force logins. This repo documents how I set it up, how I analyzed the attacks with KQL, and how I mapped where they came from.
 
 **Tools:** Microsoft Azure, Microsoft Sentinel, Log Analytics, Azure Monitor Agent, KQL, GitHub
 
 ## Key Findings
 - **One source IP made about 25,000 failed logon attempts** against the built-in Administrator account in roughly 12 hours.
-- Attackers cycled through common usernames such as `Administrator`, `ADMIN`, `USER` and `BACKUP`.
+- Attackers cycled through common usernames such as "administrator", "admin","User',"Backup"
 - Activity came from many countries, with the most geolocated attempts from Austria, Mexico and Ireland.
 - Dozens of source IPs hit the VM, and several in the same address range showed nearly identical counts and start times, which suggests one coordinated source.
 
@@ -14,7 +14,7 @@ I wanted to see what a real attack looks like from the defender's side, so I bui
 - **Resource group, virtual network and subnet** hold the lab environment.
 - **Windows 10 VM** with a network security group (firewall) deliberately open to the internet, so it acts as a honeypot.
 - **Log Analytics workspace** acts as the central log repository.
-- **Azure Monitor Agent** with a data collection rule forwards all Windows security events from the VM to the workspace.
+- **Azure Monitor Agent** with a data collection rule forwards all Windows security events from the VM to the workspace, so I could analyze logs.
 - **Microsoft Sentinel** is enabled on top of the workspace for querying and visualization.
 - **GeoIP watchlist:** I uploaded a spreadsheet of IP blocks with location data into Sentinel so I could look up where each attacker IP originates.
 
@@ -45,7 +45,7 @@ SecurityEvent
 
 ### 4. Where are they coming from?
 ![Attack map](4-attack-map.png)
-I joined the failed logon events to the GeoIP watchlist with `ipv4_lookup` and plotted the results on a Sentinel workbook map. Marker size and color reflect how many attempts came from each location. The workbook definition is saved in this repo.
+I joined the failed logon events to the GeoIP watchlist with 'Ip4_lookup` and plotted the results on a Sentinel workbook map. Marker size and color Helped me understand the amount of attempts coming from each location. The workbook definition is saved in this repo.
 
 ## What I Learned
 - How to filter, summarize and enrich log data with KQL, including joining logs to a watchlist.
